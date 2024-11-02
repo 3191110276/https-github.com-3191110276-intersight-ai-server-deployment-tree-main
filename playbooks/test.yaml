@@ -1,0 +1,66 @@
+---
+- name: Provision AI tools on server
+  hosts: localhost
+
+  tasks:
+  - name: Create a log directory
+    ansible.builtin.file:
+      path: /home/ubuntu/logs
+      state: directory
+
+  - name: Add APT Repository for Python
+    ansible.builtin.shell: add-apt-repository ppa:deadsnakes/ppa
+
+  - name: Update APT
+    ansible.builtin.shell: apt update
+
+  - name: Install Python 3.12
+    become: true
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - python3.12
+    - python3.12-venv
+
+  - name: Install pip for Python 3.12
+    ansible.builtin.shell: "python3.12 -m ensurepip --upgrade"
+
+  - name: Get Python 3.12 Pythonpath
+    shell: "which python3.12"
+    register: python_path
+    changed_when: false
+
+  - name: Create Python Virtual Environment
+    shell: "{{ python_path.stdout }} -m venv /home/ubuntu/ai-venv"
+    args:
+      creates: "/home/ubuntu/ai-venv"
+
+  - name: Install packages
+    apt:
+      pkg:
+      - pip
+      - docker.io
+  
+  - name: Adding Python packages via pip
+    pip:
+      executable: "/home/ubuntu/ai-venv/bin/pip"
+      name:
+      - jupyterlab
+      - notebook
+      - ollama
+      - open-webui
+
+  - name: Install Ollama
+    ansible.builtin.shell: curl -fsSL https://ollama.com/install.sh | sh
+
+  - name: Start Jupyter Server
+    shell: "/home/ubuntu/ai-venv/bin/jupyter lab --no-browser --port=8090 --ip=0.0.0.0 --allow-root > /home/ubuntu/logs/jupyter.log 2>&1 &"
+    async: 2
+
+  - name: Getting the Jupyter Server token
+    shell: "cat /home/ubuntu/logs/jupyter.log | grep -m 1 token | cut -d '=' -f2"
+    register: token
+
+  - name: Configure Jupyter for password instead of token auth 
+    shell: "curl -X POST -H 'Content-Type: text/html; charset=UTF-8' -d '_xsrf=2%7C99923a76%7Cbf5f9abcbdcad0ec018b01c770bef0da%7C1729598606&password=7d3185cd25210817b073a51d7e519ba2b735bea0cd782dd4&new_password={{ pw }}' localhost:8090/login?next=%2Flab%3F"
