@@ -64,3 +64,7 @@
     shell: "/home/ubuntu/ai-venv/bin/jupyter lab --no-browser --port=8090 --ip=0.0.0.0 --allow-root > /home/ubuntu/logs/jupyter.log 2>&1 &"
     async: 2
 
+  - name: Start Open WebUI Server
+    shell: "docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main"
+
+
