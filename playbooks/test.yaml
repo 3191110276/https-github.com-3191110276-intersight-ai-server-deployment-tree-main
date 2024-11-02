@@ -49,7 +49,6 @@
       - jupyterlab
       - notebook
       - ollama
-      - open-webui
 
   - name: Install Ollama
     ansible.builtin.shell: curl -fsSL https://ollama.com/install.sh | sh
