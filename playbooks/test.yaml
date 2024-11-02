@@ -53,6 +53,9 @@
   - name: Install Ollama
     ansible.builtin.shell: curl -fsSL https://ollama.com/install.sh | sh
 
+  - name: Generate the notebook configuration
+    shell: "/home/ubuntu/ai-venv/bin/jupyter notebook --generate-config -y"
+
   - name: Add password to Jupyter configuration
     expect:
       command: "/home/ubuntu/ai-venv/bin/jupyter notebook password"
