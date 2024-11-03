@@ -53,6 +53,12 @@
   - name: Install Ollama
     ansible.builtin.shell: curl -fsSL https://ollama.com/install.sh | sh
 
+  - name: Pull LLama 3.2 Model
+    ansible.builtin.shell: ollama pull llama 3.2
+
+  - name: Pull Gemma2:27b Model
+    ansible.builtin.shell: ollama pull gemma2:27b
+
   - name: Generate the notebook configuration
     shell: "/home/ubuntu/ai-venv/bin/jupyter notebook --generate-config -y"
 
