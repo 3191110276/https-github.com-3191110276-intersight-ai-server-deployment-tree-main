@@ -39,7 +39,7 @@
   - name: Install packages
     apt:
       pkg:
-      - pip
+      - unzip
       - docker.io
   
   - name: Adding Python packages via pip
@@ -63,11 +63,22 @@
         Enter password: "{{ pw }}"
         Verify password: "{{ pw }}"
 
+
+  - name: Download EasyDiffusion installer
+    ansible.builtin.shell: wget https://github.com/cmdr2/stable-diffusion-ui/releases/latest/download/Easy-Diffusion-Linux.zip -O /home/ubuntu/easy-diffusion.zip
+
+  - name: Unzip EasyDiffusion installer
+    ansible.builtin.shell: unzip /home/ubuntu/easy-diffusion.zip
+
+  - name: Clean up EasyDiffusion installer ZIP
+    ansible.builtin.shell: rm /home/ubuntu/easy-diffusion.zip
+
   - name: Start Jupyter Server
     shell: "/home/ubuntu/ai-venv/bin/jupyter lab --ServerApp.root_dir=/home/ubuntu/jupyter --no-browser --port=8090 --ip=0.0.0.0 --allow-root > /home/ubuntu/logs/jupyter.log 2>&1 &"
     async: 2
 
   - name: Start Open WebUI Server
-    shell: "docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama"
+    shell: "docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama"
 
-
+  - name: Start EasyDiffusion Web UI
+    shell: "/home/ubuntu/easy-diffusion/start.sh"
