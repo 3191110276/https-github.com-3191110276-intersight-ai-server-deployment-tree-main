@@ -63,6 +63,8 @@
         Enter password: "{{ pw }}"
         Verify password: "{{ pw }}"
 
+  - name: Create Jupyter content folder
+    ansible.builtin.shell: mkdir /home/ubuntu/jupyter
 
   - name: Download EasyDiffusion installer
     ansible.builtin.shell: wget https://github.com/cmdr2/stable-diffusion-ui/releases/latest/download/Easy-Diffusion-Linux.zip -O /home/ubuntu/easy-diffusion.zip
@@ -81,4 +83,4 @@
     shell: "docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama"
 
   - name: Start EasyDiffusion Web UI
-    shell: "/home/ubuntu/easy-diffusion/start.sh"
+    shell: "sh /home/ubuntu/easy-diffusion/start.sh"
