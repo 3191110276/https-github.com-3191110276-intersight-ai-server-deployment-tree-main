@@ -64,7 +64,7 @@
         Verify password: "{{ pw }}"
 
   - name: Start Jupyter Server
-    shell: "/home/ubuntu/ai-venv/bin/jupyter lab --no-browser --port=8090 --ip=0.0.0.0 --allow-root > /home/ubuntu/logs/jupyter.log 2>&1 &"
+    shell: "/home/ubuntu/ai-venv/bin/jupyter lab --ServerApp.root_dir=/home/ubuntu/jupyter --no-browser --port=8090 --ip=0.0.0.0 --allow-root > /home/ubuntu/logs/jupyter.log 2>&1 &"
     async: 2
 
   - name: Start Open WebUI Server
