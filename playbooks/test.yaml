@@ -89,7 +89,7 @@
     async: 2
 
   - name: Start Open WebUI Server
-    shell: "docker run -d -p 3000:8080 -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama"
+    shell: "docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main"
 
   #- name: Start EasyDiffusion Web UI
   #  shell: "sh /home/ubuntu/easy-diffusion/start.sh"
